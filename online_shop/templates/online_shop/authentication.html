@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+    {% include 'online_shop/navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5 pb-3">
+        <div class="col-lg-12">
+            <div class="mb-4 mx-auto w-25">
+                <h4 class="font-weight-semi-bold mb-4">{{title}}</h4>
+                <div class="form-group">
+                    {% comment %} <div class="row"> {% endcomment %}
+                        {% for form_field in auth_form %}
+                            {{form_field.label_tag}}   
+                            {{form_field}}
+                        {% endfor %}
+                        {% comment %} </div> {% endcomment %}
+                    <a href="{% url 'signup' %}" class="mb-2 d-block">Don't have an account?</a>
+                    <a href="#" class="mb-4 d-block">Forgot password?</a>
+                    <button class="btn btn-primary d-block">{{title}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
