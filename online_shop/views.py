@@ -1,112 +1,12 @@
-from itertools import product
 import json
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
+from django.contrib.auth.models import User
+from django.contrib.auth import logout, authenticate, login
 from .models import Product, Category
 from .forms import LogInForm, SignUpForm
-
-dummy_categories = [
-    {
-        'category': "Men's dresses",
-        'image': 'img/cat-1.jpg'
-    },
-    {
-        'category': "Women's dresses",
-        'image': 'img/cat-2.jpg'
-    },
-    {
-        'category': "Baby's dresses",
-        'image': 'img/cat-3.jpg'
-    },
-    {
-        'category': "Accessories",
-        'image': 'img/cat-4.jpg'
-    },
-    {
-        'category': "Bags",
-        'image': 'img/cat-5.jpg'
-    },
-    {
-        'category': "Shoes",
-        'image': 'img/cat-6.jpg'
-    },
-]
-
-dummy_products = [
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-1.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-2.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-3.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-4.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-5.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-6.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-7.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-    {   
-        'product_name': 'Colorful Stylish Shirt',
-        'image': 'img/product-8.jpg',
-        'price': '$123.00',
-        'discounted-price': '$123.00',
-        'id': '511'
-    },
-]
-
-dummy_product_detail = {
-    'product_name' : 'Colorful Stylish Shirt',
-    'price' : '$150.00',
-    'product_desc_short': 'The description doesn’t need to be formal, stick with the language you’re comfortable using on your channels already and remember it should be straightforward and informative rather than overly descriptive. If you’re struggling to write it from your own point of view a trick is to use third person, just like you would with an artist bio.',
-    'product_desc_long': """Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt. Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.""",
-    'product_information': """Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.""",
-    'image': 'img/product-1.jpg',
-    'images': ['img/product-2.jpg', 'img/product-3.jpg', 'img/product-4.jpg'],
-    'reviews': [{
-        'user_name': 'John',
-        'rating': 4,
-        'review_text': 'Amazing product.'
-    },]
-}
 
 # Create your views here.
 
@@ -116,10 +16,13 @@ class IndexView(View):
         trendy_product = Product.objects.filter(trendy=True)[:8]
         new_product= Product.objects.filter(new_product=True)[:8]
 
+
+
         return render(request, 'online_shop/index.html', {
             'categories': categories,
             'trendy_products': trendy_product,
-            'new_product': new_product
+            'new_product': new_product,
+            'user': request.user
 
         })
 
@@ -229,6 +132,7 @@ class CheckOutView(View):
         return HttpResponse('OK')
 class ContactView(View):
     def get(self, request):
+        print(request.user)
         return render(request, 'online_shop/contact.html')
 
 class LogInView(View):
@@ -236,7 +140,20 @@ class LogInView(View):
         login_form = LogInForm()
         return render(request, 'online_shop/authentication.html', {
             'auth_form': login_form,
-            'title': 'Log In'
+            'title': 'Log In',
+            'action': 'login'
+        })
+
+    def post(self, request):
+        login_form = LogInForm(request.POST)
+        if login_form.is_valid():
+            user = authenticate(username=login_form.cleaned_data.get('email'), password=login_form.cleaned_data.get('password'))
+            login(request, user)
+            HttpResponseRedirect(reverse('index'))
+        return render(request, 'online_shop/authentication.html', {
+            'auth_form': login_form,
+            'title': 'Log In',
+            'action': 'login'
         })
 
 class SignUpView(View):
@@ -244,5 +161,26 @@ class SignUpView(View):
         signup_form = SignUpForm()
         return render(request, 'online_shop/authentication.html', {
             'auth_form': signup_form,
-            'title': 'Sign Up'
+            'title': 'Sign Up',
+            'action': 'signup'
         })
+    def post(self, request):
+            signup_form = SignUpForm(request.POST)
+
+            if signup_form.is_valid():
+                email = signup_form.cleaned_data.get('email')
+                password = signup_form.cleaned_data.get('password')
+                user = User.objects.create_user(email, email, password)
+                user.save()
+                return HttpResponseRedirect(reverse('index'))
+
+            return render(request, 'online_shop/authentication.html', {
+                'auth_form': signup_form,
+                'title': 'Sign Up',
+                'action': 'signup'
+            })
+
+class LogOutView(View):
+    def get(self, request):
+        logout(request)
+        return HttpResponseRedirect(reverse('index'))

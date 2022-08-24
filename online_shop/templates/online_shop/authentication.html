@@ -11,15 +11,20 @@
             <div class="mb-4 mx-auto w-25">
                 <h4 class="font-weight-semi-bold mb-4">{{title}}</h4>
                 <div class="form-group">
-                    {% comment %} <div class="row"> {% endcomment %}
-                        {% for form_field in auth_form %}
+                    <form action="{% url action %}" method="POST">
+                    {% csrf_token %}
+                        {% comment %} <div class="row"> {% endcomment %}
+                            {{auth_form.non_field_errors}}
+                            {% for form_field in auth_form %}
                             {{form_field.label_tag}}   
                             {{form_field}}
-                        {% endfor %}
-                        {% comment %} </div> {% endcomment %}
-                    <a href="{% url 'signup' %}" class="mb-2 d-block">Don't have an account?</a>
-                    <a href="#" class="mb-4 d-block">Forgot password?</a>
-                    <button class="btn btn-primary d-block">{{title}}</button>
+                            {{form_field.errors}}
+                            {% endfor %}
+                            {% comment %} </div> {% endcomment %}
+                            <a href="{% url 'signup' %}" class="mb-2 d-block">Don't have an account?</a>
+                            <a href="#" class="mb-4 d-block">Forgot password?</a>
+                            <button class="btn btn-primary d-block">{{title}}</button>
+                    </form>
                 </div>
             </div>
         </div>
