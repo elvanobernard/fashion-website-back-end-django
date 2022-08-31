@@ -212,10 +212,69 @@ const csrftoken = getCookie('csrftoken');
     });
 
     $('.place-order-btn').click(function(){
-        console.log('Button clicked')
-        console.log($('#buyer-data-form'))
+        console.log('Button clicked');
+        console.log($('#buyer-data-form'));
         $('#buyer-data-form')[0].submit();
     });
+
+    
+
+    const submit_filter = function(){
+        const url = new URL($(location).attr('href'));
+        const context = {
+            'csrfmiddlewaretoken': csrftoken,
+            'filter': ""
+        }
+
+        const filter = []
+        // If all price filter not checked, obtain all price range that want to be filtered
+        if(!$('#price-all')[0].checked){
+            for(let i = 1; i <= $('.price-filter-id').length; i++){
+                if($(`#price-${i}`)[0].checked){
+                    filter.push($(`#price-${i}`)[0].value);
+                }
+            }
+
+        }
+
+        context['filter'] = filter.toString();
+
+        // $.post(url.pathname, context)
+        $("#products-container").html('').load(url.pathname, context);
+    }
+
+    // Check/Uncheck Price Filter
+    // Unchecking all other price filter if "all price" filter is checked
+    $('#price-all').change(function(){
+        console.log('price-all changed');
+        if(this.checked){
+            for(let i = 1; i <= $('.price-filter-id').length; i++){
+                $(`#price-${i}`)[0].checked = false;
+            }
+        }
+        
+        submit_filter();
+    })
+
+    $('.price-filter-id').change(function(){
+        if(this.checked){
+            // Unchecking 'all price' filter if any other price filter is checked
+            $(`#price-all`)[0].checked = false;
+        } else {
+            // Checking if there are any checked filter. If none, check 'all price'
+            let filter_checked = false;
+            for(let i = 1; i <= $('.price-filter-id').length; i++){
+                if($(`#price-${i}`)[0].checked){
+                    filter_checked = true;
+                    break;
+                }
+            }
+
+            if(!filter_checked) $(`#price-all`)[0].checked = true;
+        }
+        
+        submit_filter();
+    })
 
 })(jQuery);
 

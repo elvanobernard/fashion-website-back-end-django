@@ -11,20 +11,20 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i class="fa fa-angle-down float-right mt-1"></i></a>
                             <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href="" class="dropdown-item">Men's Dresses</a>
-                                <a href="" class="dropdown-item">Women's Dresses</a>
-                                <a href="" class="dropdown-item">Baby's Dresses</a>
+                                <a href="{% url 'category-product' 'mens-dresses' %}" class="dropdown-item">Men's Dresses</a>
+                                <a href="{% url 'category-product' 'womens-dresses' %}" class="dropdown-item">Women's Dresses</a>
+                                <a href="{% url 'category-product' 'baby-dresses' %}" class="dropdown-item">Baby's Dresses</a>
                             </div>
                         </div>
-                        <a href="" class="nav-item nav-link">Shirts</a>
-                        <a href="" class="nav-item nav-link">Jeans</a>
-                        <a href="" class="nav-item nav-link">Swimwear</a>
-                        <a href="" class="nav-item nav-link">Sleepwear</a>
-                        <a href="" class="nav-item nav-link">Sportswear</a>
-                        <a href="" class="nav-item nav-link">Jumpsuits</a>
-                        <a href="" class="nav-item nav-link">Blazers</a>
-                        <a href="" class="nav-item nav-link">Jackets</a>
-                        <a href="" class="nav-item nav-link">Shoes</a>
+                        <a href="{% url 'category-product' 'shirts' %}" class="nav-item nav-link">Shirts</a>
+                        <a href="{% url 'category-product' 'jeans' %}" class="nav-item nav-link">Jeans</a>
+                        <a href="{% url 'category-product' 'swimwear' %}" class="nav-item nav-link">Swimwear</a>
+                        <a href="{% url 'category-product' 'sleepwear' %}" class="nav-item nav-link">Sleepwear</a>
+                        <a href="{% url 'category-product' 'sportswear' %}" class="nav-item nav-link">Sportswear</a>
+                        <a href="{% url 'category-product' 'jumpsuits' %}" class="nav-item nav-link">Jumpsuits</a>
+                        <a href="{% url 'category-product' 'blazers' %}" class="nav-item nav-link">Blazers</a>
+                        <a href="{% url 'category-product' 'jackets' %}" class="nav-item nav-link">Jackets</a>
+                        <a href="{% url 'category-product' 'shoes' %}" class="nav-item nav-link">Shoes</a>
                     </div>
                 </nav>
             </div>
@@ -51,8 +51,14 @@
                             <a href="/contact-us" class="nav-item nav-link">Contact</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
-                            <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
+                            {% if user_logged_in %}
+                                <a href="{% url 'signup' %}" class="nav-item nav-link">Profile</a>
+                                {% comment %} TODO {% endcomment %}
+                                <a href="{% url 'logout' %}" class="nav-item nav-link">Logout</a>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="nav-item nav-link">Login</a>
+                                <a href="{% url 'signup' %}" class="nav-item nav-link">Register</a>
+                            {% endif %}
                         </div>
                     </div>
                 </nav>

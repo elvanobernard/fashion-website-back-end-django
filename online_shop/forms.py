@@ -11,6 +11,9 @@ class SignUpForm(forms.Form):
     confirm_password = forms.CharField(max_length=50, widget=forms.PasswordInput(attrs={'class': 'form-control mb-3'}))
 
     def clean(self):
+        """
+            Function to perform comparation of password and password confirmation during registration of new user
+        """
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
